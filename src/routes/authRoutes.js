@@ -10,3 +10,4 @@ router.post("/logout", authenticate, authController.logout);
 router.post("/logout-all", authenticate, authController.logoutAll);
 
 module.exports = router;
+

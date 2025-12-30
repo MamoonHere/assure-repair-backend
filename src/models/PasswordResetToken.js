@@ -87,3 +87,4 @@ class PasswordResetToken {
 }
 
 module.exports = PasswordResetToken;
+

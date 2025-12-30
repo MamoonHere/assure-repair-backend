@@ -106,3 +106,4 @@ class Permission {
 
 module.exports = Permission;
 
+

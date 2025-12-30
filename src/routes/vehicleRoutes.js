@@ -1,7 +1,8 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const vehicleController = require('../controllers/vehicleController');
+const { authenticate } = require("../middleware/authMiddleware");
+const vehicleController = require("../controllers/vehicleController");
 
-router.get('/', vehicleController.getAllVehicles); 
+router.get("/", authenticate, vehicleController.getAllVehicles);
 
 module.exports = router;

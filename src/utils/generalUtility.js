@@ -43,8 +43,8 @@ const setRefreshTokenCookie = (res, token, expiresAt) => {
 const clearRefreshTokenCookie = (res) => {
   res.clearCookie(REFRESH_TOKEN_COOKIE_NAME, {
     httpOnly: true,
-    secure: isProduction,
-    sameSite: isProduction ? "strict" : "lax",
+    secure: true, //isProduction,
+    sameSite: "none", //isProduction ? 'strict' : 'lax',
     path: "/",
   });
 };

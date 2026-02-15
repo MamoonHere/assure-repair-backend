@@ -44,3 +44,47 @@ exports.getEmployees = async () => {
   }
   return response.data;
 };
+
+exports.getCustomers = async () => {
+  const { accessToken, scope } = await getAccessToken();
+
+  const repairOrdersResponse = await axios.get(
+    `${TEKMETRIC_URL}${K.Tekmetric.RepairOrders}?shop=${scope}&size=100&repairOrderStatusId=2`,
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+    },
+  );
+
+  const repairOrders = repairOrdersResponse.data;
+
+  const customerIds = repairOrders.content.map((item) => ({
+    id: item.customerId,
+    assignedTechnicianId: item.jobs[0]?.technicianId,
+    repairOrderNumber: item.repairOrderNumber,
+  }));
+
+  const customersRelevantData = await Promise.all(
+    customerIds.map(async (obj) => {
+      const customerResponse = await axios.get(
+        `${TEKMETRIC_URL}${K.Tekmetric.Customers}/${obj.id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json",
+          },
+        },
+      );
+
+      return {
+        ...customerResponse.data,
+        assignedTechnicianId: obj.assignedTechnicianId,
+        repairOrderNumber: obj.repairOrderNumber,
+      };
+    }),
+  );
+
+  return customersRelevantData;
+};

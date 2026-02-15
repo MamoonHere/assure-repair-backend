@@ -4,6 +4,7 @@ const cookieParser = require("cookie-parser");
 
 const app = express();
 const vehicleRoutes = require("./routes/vehicleRoutes");
+const tekmetricRoutes = require("./routes/tekmetricRoutes");
 const webhookRoutes = require("./routes/webhookRoutes");
 const authRoutes = require("./routes/authRoutes");
 const rbacRoutes = require("./routes/rbacRoutes");
@@ -32,6 +33,7 @@ app.use("/users", userRoutes);
 app.use("/auth", authRoutes);
 app.use("/rbac", rbacRoutes);
 app.use("/vehicles", vehicleRoutes);
+app.use("/tekmetric", tekmetricRoutes);
 app.use("/webhooks", webhookRoutes);
 
 app.use((_, res) => {

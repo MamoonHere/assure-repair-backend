@@ -227,34 +227,6 @@ const initializeTables = async () => {
         [basicEmployeeRoleId, liveMapManagePermId]
       );
     }
-    const adminEmail = "admin@admin.com";
-    const adminPassword = "ChangeMe123!";
-    const hashedPassword = await bcrypt.hash(adminPassword, 12);
-    const userResult = await client.query(
-      `
-      INSERT INTO users (email, password, first_name, last_name)
-      VALUES ($1, $2, $3, $4)
-      ON CONFLICT (email) DO NOTHING
-      RETURNING id;
-      `,
-      [adminEmail, hashedPassword, "admin", "admin"]
-    );
-    let adminUserId;
-    if (userResult.rows.length > 0) {
-      adminUserId = userResult.rows[0].id;
-    } else {
-      const existingUser = await client.query(
-        'SELECT id FROM users WHERE email = $1',
-        [adminEmail]
-      );
-      adminUserId = existingUser.rows[0].id;
-    }
-    await client.query(
-      `INSERT INTO user_roles (user_id, role_id)
-       VALUES ($1, $2)
-       ON CONFLICT (user_id, role_id) DO NOTHING`,
-      [adminUserId, superAdminRoleId]
-    );
     await client.query('COMMIT');
     console.log('Database schema initialized');
   } catch (err) {

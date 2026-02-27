@@ -21,12 +21,27 @@ app.use(
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
-        callback(new Error("Not allowed by CORS"));
+        console.warn("CORS rejected origin:", origin, "allowed:", allowedOrigins);
+        const err = new Error("Not allowed by CORS");
+        err.status = 403;
+        err.receivedOrigin = origin;
+        err.allowedOrigins = allowedOrigins;
+        callback(err);
       }
     },
     credentials: true,
   })
 );
+
+// Debug: GET /cors-check returns incoming Origin and whether it's allowed (test with curl -H "Origin: <your-frontend>" <backend>/cors-check)
+app.get("/cors-check", (req, res) => {
+  const origin = req.get("origin");
+  res.json({
+    origin: origin || "(no Origin header)",
+    allowed: !origin || allowedOrigins.includes(origin),
+    allowedOrigins,
+  });
+});
 
 app.use(cookieParser());
 app.use(express.json({ limit: "10mb" }));
@@ -45,12 +60,18 @@ app.use((_, res) => {
 
 app.use((err, req, res, next) => {
   console.error("Unhandled error:", err);
-  sendResponse(
-    res,
-    err.status || 500,
-    null,
-    process.env.NODE_ENV === "production" ? "Something went wrong" : err.message
-  );
+  const status = err.status || 500;
+  const isCorsError = err.receivedOrigin !== undefined;
+  const message =
+    process.env.NODE_ENV === "production" && !isCorsError
+      ? "Something went wrong"
+      : err.message;
+  const payload = { data: null, message };
+  if (isCorsError && (err.receivedOrigin || err.allowedOrigins)) {
+    payload.receivedOrigin = err.receivedOrigin;
+    payload.allowedOrigins = err.allowedOrigins;
+  }
+  res.status(status).json(payload);
 });
 
 module.exports = app;

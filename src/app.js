@@ -11,7 +11,10 @@ const rbacRoutes = require("./routes/rbacRoutes");
 const userRoutes = require("./routes/userRoutes");
 const { sendResponse } = require("./utils/generalUtility");
 
-const allowedOrigins = ["https://yourfrontend.com", "http://localhost:5173", "https://capsulate-unmellifluously-dante.ngrok-free.dev"];
+const allowedOrigins = process.env.CORS_ORIGIN
+  ? process.env.CORS_ORIGIN.split(",").map((s) => s.trim()).filter(Boolean)
+  : [];
+
 app.use(
   cors({
     origin: (origin, callback) => {

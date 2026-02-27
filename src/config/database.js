@@ -239,9 +239,6 @@ const initializeTables = async () => {
   }
 };
 
-process.on('SIGINT', closeDB);
-process.on('SIGTERM', closeDB);
-
 module.exports = {
   connectDB,
   getPool,

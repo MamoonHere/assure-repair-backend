@@ -33,8 +33,8 @@ const setRefreshTokenCookie = (res, token, expiresAt) => {
   }
   res.cookie(REFRESH_TOKEN_COOKIE_NAME, token, {
     httpOnly: true,
-    secure: true, //isProduction,
-    sameSite: "none", //isProduction ? 'strict' : 'lax',
+    secure: isProduction,
+    sameSite: isProduction ? 'strict' : 'none',
     maxAge: maxAge * 1000,
     path: "/",
   });
@@ -43,8 +43,8 @@ const setRefreshTokenCookie = (res, token, expiresAt) => {
 const clearRefreshTokenCookie = (res) => {
   res.clearCookie(REFRESH_TOKEN_COOKIE_NAME, {
     httpOnly: true,
-    secure: true, //isProduction,
-    sameSite: "none", //isProduction ? 'strict' : 'lax',
+    secure: isProduction,
+    sameSite: isProduction ? 'strict' : 'none',
     path: "/",
   });
 };

@@ -32,12 +32,16 @@ app.use(cookieParser());
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
-app.use("/users", userRoutes);
-app.use("/auth", authRoutes);
-app.use("/rbac", rbacRoutes);
-app.use("/vehicles", vehicleRoutes);
-app.use("/tekmetric", tekmetricRoutes);
-app.use("/webhooks", webhookRoutes);
+const apiRouter = express.Router();
+
+apiRouter.use("/users", userRoutes);
+apiRouter.use("/auth", authRoutes);
+apiRouter.use("/rbac", rbacRoutes);
+apiRouter.use("/vehicles", vehicleRoutes);
+apiRouter.use("/tekmetric", tekmetricRoutes);
+apiRouter.use("/webhooks", webhookRoutes);
+
+app.use("/api", apiRouter); 
 
 app.use((_, res) => {
   sendResponse(res, 404, null, "Route not found");

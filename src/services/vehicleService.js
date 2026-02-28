@@ -14,7 +14,6 @@ let tokenFetchPromise = null;
 const fetchAccessToken = async () => {
   if (tokenFetchPromise) return tokenFetchPromise;
   const promise = (async () => {
-    console.log("here1",BOUNCIE_AUTHORIZATION_KEY)
     const authResponse = await axios.post(
       BOUNCIE_AUTH_URL,
       {
@@ -26,7 +25,6 @@ const fetchAccessToken = async () => {
       },
       { headers: { "Content-Type": "application/json" } },
     );
-    console.log("here", authResponse.data)
     tokenCache = authResponse.data.access_token;
     return tokenCache;
   })();
